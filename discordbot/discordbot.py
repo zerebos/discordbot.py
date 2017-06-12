@@ -1,11 +1,15 @@
+import logging
+import os
+import sys
+
+import discord
 from discord.ext import commands
 from discord.ext.commands.bot import _mention_pattern, _mentions_transforms
-import logging
+
 from . import colors, embeds
-from .messages import Messages
 from .bot_utils import config
-import sys, os
-import discord
+from .messages import Messages
+
 
 async def _default_help_command(ctx, *commands : str):
     """Shows this message."""

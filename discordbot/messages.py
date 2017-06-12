@@ -1,6 +1,5 @@
-import discord
-from . import embeds
 import discordbot
+from . import embeds
 
 
 class Messages:

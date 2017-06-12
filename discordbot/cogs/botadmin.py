@@ -3,11 +3,11 @@ import asyncio
 from collections import Counter, defaultdict
 
 import discord
-from ..bot_utils import config
 from discord.ext import commands
 
-from ..bot_utils import checks
 import discordbot.embeds
+from ..bot_utils import checks
+from ..bot_utils import config
 
 
 class Arguments(argparse.ArgumentParser):

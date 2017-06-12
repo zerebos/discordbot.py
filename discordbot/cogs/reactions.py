@@ -1,9 +1,7 @@
-from collections import OrderedDict
+from discord.ext import commands
 
-import discord
 from ..bot_utils import config, checks
 from ..bot_utils.paginator import Pages
-from discord.ext import commands
 
 
 class Reactions:

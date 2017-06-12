@@ -1,14 +1,15 @@
 import copy
-from collections import OrderedDict
-from ..bot_utils.paginator import Pages
 import datetime
 import traceback
 from collections import Counter
+from collections import OrderedDict
 
 import discord
 import psutil
-from ..bot_utils import config, checks
 from discord.ext import commands
+
+from ..bot_utils import config, checks
+from ..bot_utils.paginator import Pages
 
 
 class Meta:
