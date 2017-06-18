@@ -1,4 +1,4 @@
-import copy
+import copy, os
 import datetime
 import traceback
 from collections import Counter
@@ -195,11 +195,22 @@ class Meta:
         testing right now.
         """
 
-        revision = self.bot.description
-        embed = discord.Embed(description='About the Bot:\n' + revision)
+        cmd = r'git show -s -3 --format="%s (%cr)"'
+        if os.name == 'posix':
+            cmd = cmd.format(r'\`%h\`')
+        else:
+            cmd = cmd.format(r'`%h`')
+
+        revision = os.popen(cmd).read().strip()
+
+        # revision = self.bot.description
+        embed = discord.Embed() #description='About the Bot:\n' + revision
         embed.title = 'Zerebos\' Server'
         embed.url = 'https://discord.gg/cdzD9wF'
         embed.colour = 0x738bd7 # blurple
+
+        embed.add_field(name="About:", value=self.bot.description, inline=False)
+        embed.add_field(name="Latest Changes:", value=revision, inline=False)
 
         try:
             owner = self._owner
