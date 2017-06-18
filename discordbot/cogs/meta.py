@@ -209,7 +209,7 @@ class Meta:
         embed.url = 'https://discord.gg/cdzD9wF'
         embed.colour = 0x738bd7 # blurple
 
-        embed.add_field(name="About:", value=self.bot.description, inline=False)
+        embed.add_field(name="About "+self.bot.user.name+":", value=self.bot.description, inline=False)
         embed.add_field(name="Latest Changes:", value=revision, inline=False)
 
         try:
