@@ -205,7 +205,7 @@ class Meta:
 
         # revision = self.bot.description
         embed = discord.Embed() #description='About the Bot:\n' + revision
-        embed.title = 'Zerebos\' Server'
+        embed.title = 'Zerebos\' Server Invite'
         embed.url = 'https://discord.gg/cdzD9wF'
         embed.colour = 0x738bd7 # blurple
 
