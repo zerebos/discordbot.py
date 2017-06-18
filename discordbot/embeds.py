@@ -20,7 +20,7 @@ def build_embed(**params):
     timestamp = params.get("timestamp", EmptyEmbed)
     image = params.get("image", "")
     thumbnail = params.get("thumbnail", "")
-    sections = params.get("sections", [])
+    sections = params.get("sections", params.get("fields", []))
     e = discord.Embed()
     e.title = title
     e.description = description

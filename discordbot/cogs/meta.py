@@ -10,6 +10,7 @@ from discord.ext import commands
 
 from ..bot_utils import config, checks
 from ..bot_utils.paginator import Pages
+from ..colors import Colors
 
 
 class Meta:
@@ -158,7 +159,7 @@ class Meta:
             stats.append(c + ": " + str(commands[c]))
         try:
             pager = Pages(self.bot, message=ctx.message, entries=stats)
-            pager.embed.colour = self.bot.colors.get_default(self)
+            pager.embed.colour = Colors.get_default(self)
             pager.embed.set_author(name="Command stats for " + title,
                                    icon_url=ctx.message.server.icon_url)
             await pager.paginate()

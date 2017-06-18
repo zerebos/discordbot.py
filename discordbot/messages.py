@@ -1,5 +1,6 @@
 import discordbot
 from . import embeds
+from .colors import Colors
 
 
 class Messages:
@@ -34,6 +35,8 @@ class Messages:
         return await self.say(**params, embed=e)
 
     async def basic(self, **params):
+        color = params.pop("color", self.default_color)
+        if isinstance(color, Colors): color = color.value
         e = embeds.build_embed(title=params.pop("title", ""), description=params.pop("message", params.pop("description", "")),
                                color=params.pop("color", self.default_color), **params)
         return await self.say(**params, embed=e)
@@ -41,12 +44,12 @@ class Messages:
     async def success(self, **params):
         title = params.pop("title", "")
         message = params.pop("message", "Success")
-        return await self.basic(title=title, message=message, color=self.bot.colors.success.value, **params)
+        return await self.basic(title=title, message=message, color=Colors.success, **params)
 
     async def failure(self, **params):
         title = params.pop("title", "")
         message = params.pop("message", "Success")
-        return await self.basic(title=title, message=message, color=self.bot.colors.failure.value, **params)
+        return await self.basic(title=title, message=message, color=Colors.failure, **params)
 
     async def toggle(self, **params):
         title = params.pop("title", "")

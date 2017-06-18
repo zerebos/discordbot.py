@@ -9,6 +9,7 @@ from discord.ext.commands.bot import _mention_pattern, _mentions_transforms
 from . import colors, embeds
 from .bot_utils import config
 from .messages import Messages
+import traceback, datetime
 
 
 async def _default_help_command(ctx, *commands : str):
@@ -94,17 +95,19 @@ class DiscordBot(commands.Bot):
 
         self.client_id = client_id
         self.token = token
-        self.colors = colors.Color
+        self.colors = colors.Colors
         self.responses = Messages(self)
 
         self.remove_command("help")
         self.command(**self.help_attrs)(_default_help_command)
+        # self.add_listener(self.on_ready)
 
     async def set_prefix(self, prefix):
         self.command_prefix = prefix
         await self.change_presence(game=discord.Game(name='{}help for help'.format(prefix)))
 
     def load_cogs(self, cogs):
+        cogs.extend(['discordbot.cogs.meta', 'discordbot.cogs.botadmin'])
         for extension in cogs:
             try:
                 self.load_extension(extension)
@@ -113,3 +116,38 @@ class DiscordBot(commands.Bot):
 
     def run(self):
         super().run(self.token)
+
+    async def on_command_error(self, error, ctx):
+        if isinstance(error, commands.NoPrivateMessage):
+            await self.send_message(ctx.message.author, 'This command cannot be used in private messages.')
+        elif isinstance(error, commands.DisabledCommand):
+            await self.send_message(ctx.message.author, 'Sorry. This command is disabled and cannot be used.')
+        elif isinstance(error, commands.CommandInvokeError):
+            print('In {0.command.qualified_name}:'.format(ctx), file=sys.stderr)
+            traceback.print_tb(error.original.__traceback__)
+            print('{0.__class__.__name__}: {0}'.format(error.original), file=sys.stderr)
+
+    async def on_ready(self):
+        print('Logged in as:')
+        print('Username: ' + self.user.name)
+        print('ID: ' + self.user.id)
+        print('------')
+        await self.change_presence(game=discord.Game(name='{}help for help'.format(self.command_prefix)))
+        if not hasattr(self, 'uptime'):
+            self.uptime = datetime.datetime.utcnow()
+
+    async def on_message(self, message):
+        if message.author.bot:
+            return
+
+        await self.process_commands(message)
+
+    async def on_resumed(self):
+        print('resumed...')
+
+    async def logout(self):
+        await super(DiscordBot, self).logout()
+        for log in self.logs.values():
+            for h in log.handlers:
+                h.close()
+                log.removeHandler(h)

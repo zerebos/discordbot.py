@@ -2,6 +2,7 @@ import argparse
 import asyncio
 from collections import Counter, defaultdict
 
+import copy
 import discord
 from discord.ext import commands
 
@@ -133,6 +134,15 @@ class BotAdmin:
                     {"name": "Section 3", "value": "Value 3", "inline": False}]
         e = discordbot.embeds.build_embed(title="IDK", description="foo bar", sections=sections)
         await self.bot.say(embed=e)
+
+    @discordbot.command(name="do", pass_context=True, hidden=True)
+    @discordbot.checks.is_owner()
+    async def _do(self, ctx, times: int, *, command):
+        """Repeats a command a specified number of times."""
+        msg = copy.copy(ctx.message)
+        msg.content = command
+        for i in range(times):
+            await self.bot.process_commands(msg)
 
     @commands.command(pass_context=True, no_pm=True)
     @checks.admin_or_permissions(manage_server=True)

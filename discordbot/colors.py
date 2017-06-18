@@ -1,6 +1,6 @@
 from enum import Enum
 
-class Color(Enum):
+class Colors(Enum):
     success = 0x71cd40
     failure = 0xe74a3c
     blurple = 0x738bd7
