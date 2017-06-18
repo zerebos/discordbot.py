@@ -22,7 +22,6 @@ from .bot_utils.config import Config
 from .bot_utils.paginator import Pages
 from .bot_utils.formats import human_timedelta
 from .bot_utils import checks, config, paginator, formats
-from .bot_utils import checks as check
 from discord.ext import commands
 from discord.ext.commands import *
 from discord import *
