@@ -78,7 +78,7 @@ class DiscordBot(commands.Bot):
             description = self.config.get("meta", {}).get("description", "")
 
         if pm_help is None:
-            pm_help = self.config.get("meta", {}).get("pm_help", False)
+            pm_help = self.config.get("meta", {}).get("pm_help", None)
 
         super().__init__(command_prefix, formatter=embeds.EmbedHelpFormatter(self),
                          description=description, pm_help=pm_help, command_not_found='No command called "{}" found.',
