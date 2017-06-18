@@ -65,7 +65,21 @@ async def _default_help_command(ctx, *commands : str):
 
 class DiscordBot(commands.Bot):
 
-    def __init__(self, command_prefix, formatter=None, description=None, pm_help=False, **options):
+    def __init__(self, command_prefix, formatter=None, description=None, pm_help=None, **options):
+        self.config = config.Config('settings.json', directory="")
+
+        if command_prefix is None:
+            command_prefix = self.config.get("meta", {}).get("prefix", "")
+        if not command_prefix:
+            print("Prefix was not supplied")
+            sys.exit(1)
+
+        if description is None:
+            description = self.config.get("meta", {}).get("description", "")
+
+        if pm_help is None:
+            pm_help = self.config.get("meta", {}).get("pm_help", False)
+
         super().__init__(command_prefix, formatter=embeds.EmbedHelpFormatter(self),
                          description=description, pm_help=pm_help, command_not_found='No command called "{}" found.',
                          command_has_no_subcommands='Command "{0.name}" has no subcommands.', **options)
@@ -83,7 +97,7 @@ class DiscordBot(commands.Bot):
         info_log.addHandler(logging.FileHandler(filename='logs/info.log', encoding='utf-8'))
 
         self.logs = {'discord': discord_logger, 'stats': stats_log, 'info': info_log}
-        self.config = config.Config('settings.json', directory="")
+
         credentials = self.config.get('credentials', {})
 
         client_id = credentials.get('client_id', "")
@@ -100,13 +114,14 @@ class DiscordBot(commands.Bot):
 
         self.remove_command("help")
         self.command(**self.help_attrs)(_default_help_command)
-        # self.add_listener(self.on_ready)
 
     async def set_prefix(self, prefix):
         self.command_prefix = prefix
         await self.change_presence(game=discord.Game(name='{}help for help'.format(prefix)))
 
-    def load_cogs(self, cogs):
+    def load_cogs(self, cogs = None):
+        if cogs is None:
+            cogs = self.config.get("cogs", [])
         cogs.extend(['discordbot.cogs.meta', 'discordbot.cogs.botadmin'])
         for extension in cogs:
             try:

@@ -12,7 +12,7 @@ __title__ = 'discordbot'
 __author__ = 'Zack Rauen'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2017 Zack Rauen'
-__version__ = '0.1.8'
+__version__ = '0.1.9'
 
 
 from .discordbot import DiscordBot
@@ -30,4 +30,4 @@ from discord import *
 from collections import namedtuple
 VersionInfo = namedtuple('VersionInfo', 'major minor micro releaselevel serial')
 
-version_info = VersionInfo(major=0, minor=1, micro=8, releaselevel='alpha', serial=0)
+version_info = VersionInfo(major=0, minor=1, micro=9, releaselevel='alpha', serial=0)
