@@ -1,8 +1,12 @@
 from difflib import SequenceMatcher
 import aiohttp
+import re
 
 def wordcount(string : str):
     return len(string.split())
+
+def escape_markdown(string : str):
+    return re.sub("([*~_`])", r"\\\1", string)
 
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
