@@ -65,7 +65,7 @@ async def _default_help_command(ctx, *commands : str):
 
 class DiscordBot(commands.Bot):
 
-    def __init__(self, command_prefix, formatter=None, description=None, pm_help=None, **options):
+    def __init__(self, command_prefix=None, formatter=None, description=None, pm_help=None, **options):
         self.config = config.Config('settings.json', directory="")
 
         if command_prefix is None:
@@ -80,9 +80,12 @@ class DiscordBot(commands.Bot):
         if pm_help is None:
             pm_help = self.config.get("meta", {}).get("pm_help", None)
 
-        super().__init__(command_prefix, formatter=embeds.EmbedHelpFormatter(self),
+        help_attrs = options.pop("help_attrs", {})
+        help_attrs['hidden'] = True
+
+        super().__init__(command_prefix, formatter=formatter if formatter else embeds.EmbedHelpFormatter(self),
                          description=description, pm_help=pm_help, command_not_found='No command called "{}" found.',
-                         command_has_no_subcommands='Command "{0.name}" has no subcommands.', **options)
+                         command_has_no_subcommands='Command "{0.name}" has no subcommands.', help_attrs=help_attrs, **options)
         os.makedirs("logs", exist_ok=True)
         discord_logger = logging.getLogger('discord')
         discord_logger.setLevel(logging.CRITICAL)
