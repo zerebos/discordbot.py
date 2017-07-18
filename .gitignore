@@ -1,6 +1,8 @@
 # Directories #
-.idea/
+.idea/*
 __pycache__/
 
 # Files #
 *.pyc
+*.iml
+*xml
