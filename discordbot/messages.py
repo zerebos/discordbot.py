@@ -26,19 +26,19 @@ class Messages:
         if not member:
             return
         e = embeds.build_embed(description=params.pop("message", ""), author=member.display_name, author_img=member.avatar_url,
-                               color=params.pop("color", self.default_color), **params)
+                               color=params.pop("color", Colors.get_default(self.bot)), **params)
         return await self.say(**params, embed=e)
 
     async def full(self, **params):
-        params["color"] = params.get("color", self.default_color)
+        params["color"] = params.get("color", Colors.get_default(self.bot))
         e = embeds.build_embed(**params)
         return await self.say(**params, embed=e)
 
     async def basic(self, **params):
-        color = params.pop("color", self.default_color)
+        color = params.pop("color", Colors.get_default(self.bot))
         if isinstance(color, Colors): color = color.value
         e = embeds.build_embed(title=params.pop("title", ""), description=params.pop("message", params.pop("description", "")),
-                               color=params.pop("color", self.default_color), **params)
+                               color=params.pop("color", Colors.get_default(self.bot)), **params)
         return await self.say(**params, embed=e)
 
     async def success(self, **params):
