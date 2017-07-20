@@ -91,7 +91,7 @@ As long as you have a JSON file like this:
   "credentials": {
     "token": "YOUR_TOKEN_HERE",
     "client_id": "YOUR_CLIENT_ID"
-  }
+  },
   "cogs": ["cog_folder.cog_name", "cog_folder.another_cog"]
 }
 ```
