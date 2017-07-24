@@ -9,7 +9,7 @@ The documentation will be built up over time hopefully.
 
 ### Simple Example
 
-To create a bot that will greet new members when they join and great anyone that types `!greet` you can do the following:
+To create a bot that will greet new members when they join and greet anyone that types `!greet` you can do the following:
 
 ```py
 import discordbot
@@ -20,13 +20,13 @@ bot = discordbot.DiscordBot()
 @bot.event
 async def on_member_join(member):
     await bot.send_message(member.server, "Welcome {0.mention}, would you like to introduce yourself?".format(member))
-	
+
 @bot.command(pass_context=True)
 async def greet(ctx):
     """Greets the user.
 
-    This is additional help text that will only show up if 
-    help is called on the command itself as opposed to the 
+    This is additional help text that will only show up if
+    help is called on the command itself as opposed to the
     normal short help which shows up in the main help.
     """
     await bot.responses.say("Hi there, {0.mention}, how are you?".format(ctx.message.author))
