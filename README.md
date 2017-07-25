@@ -9,7 +9,7 @@ The documentation will be built up over time hopefully.
 
 ### Simple Example
 
-To create a bot that will greet new members when they join and great anyone that types `!greet` you can do the following:
+To create a bot that will greet new members when they join and greet anyone that types `!greet` you can do the following:
 
 ```py
 import discordbot
