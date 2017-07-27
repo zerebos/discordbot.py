@@ -9,6 +9,7 @@ from discord.ext import commands
 import discordbot.embeds
 from ..bot_utils import checks
 from ..bot_utils import config
+from ..colors import Colors
 
 
 class Arguments(argparse.ArgumentParser):
@@ -85,11 +86,12 @@ class BotAdmin:
             if message.author.id != owner_id and to_send:
                 owner = await self.bot.get_user_info(owner_id)
                 if message.content:
-                    await self.bot.responses.basic(destination=owner, message=message.content, author=str(message.author), author_img=message.author.avatar_url, color=0x71cd40, image=image)
+                    await self.bot.responses.basic(destination=owner, message=message.content, author=str(message.author), author_img=message.author.avatar_url, color=Colors.get_default(self.bot), image=image)
                 if embed:
                     embed.pop("author", "")
                     url = embed.pop("thumbnail", {}).get("url", "")
                     e = discord.Embed.from_data(embed)
+                    e.color = Colors.get_default(self.bot)
                     e.set_image(url=url)
                     e.set_author(name="Embed from " + str(message.author), icon_url=message.author.avatar_url)
                     await self.bot.send_message(destination=owner, embed=e)
