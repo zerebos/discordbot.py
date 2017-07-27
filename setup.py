@@ -9,7 +9,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='discordbot.py',
-    version='0.2.3.a1',
+    version='0.2.3.a2',
     description='A wrapper for discord.py with advanced functionality',
     long_description=long_description,
     url='https://github.com/rauenzi/discordbot.py',
