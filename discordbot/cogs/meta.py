@@ -159,7 +159,7 @@ class Meta:
             stats.append(c + ": " + str(commands[c]))
         try:
             pager = Pages(self.bot, message=ctx.message, entries=stats)
-            pager.embed.colour = Colors.get_default(self)
+            pager.embed.colour = Colors.get_default(self.bot)
             pager.embed.set_author(name="Command stats for " + title,
                                    icon_url=ctx.message.server.icon_url)
             await pager.paginate()
@@ -201,21 +201,23 @@ class Meta:
         else:
             cmd = cmd.format(r'`%h`')
 
-        revision = os.popen(cmd).read().strip()
-
-        # revision = self.bot.description
-        embed = discord.Embed() #description='About the Bot:\n' + revision
-        embed.title = 'Zerebos\' Server Invite'
-        embed.url = 'https://discord.gg/cdzD9wF'
-        embed.colour = 0x738bd7 # blurple
+        embed = discord.Embed()
+        embed.colour = Colors.get_default(self.bot)
 
         embed.add_field(name="About "+self.bot.user.name+":", value=self.bot.description, inline=False)
-        embed.add_field(name="Latest Changes:", value=revision, inline=False)
+        
+        if os.popen('git rev-list --all --count').close() is None and os.popen('git rev-parse').close() is None:
+            revision = os.popen(cmd).read().strip()
+            embed.add_field(name="Latest Changes:", value=revision, inline=False)
 
         try:
             owner = self._owner
         except AttributeError:
             owner = self._owner = await self.bot.get_user_info(self.bot.config.get('meta', {}).get('owner', "249746236008169473"))
+
+        if self.bot.ownerInviteLink:
+            embed.title = owner.name+'\'s Server Invite'
+            embed.url = self.bot.ownerInviteLink
 
         embed.set_author(name="Created by "+str(owner), icon_url=owner.avatar_url)
 
@@ -234,7 +236,7 @@ class Meta:
         memory_usage = self.process.memory_full_info().uss / 1024**2
         cpu_usage = self.process.cpu_percent() / psutil.cpu_count()
         embed.add_field(name='Process', value='{:.2f} MiB\n{:.2f}% CPU'.format(memory_usage, cpu_usage))
-        embed.set_footer(text='Made with discord.py', icon_url='http://i.imgur.com/5BFecvA.png')
+        embed.set_footer(text='Made with discord.py & discordbot.py', icon_url='http://i.imgur.com/5BFecvA.png')
         embed.timestamp = self.bot.uptime
 
         data = self.config.get('data', {})

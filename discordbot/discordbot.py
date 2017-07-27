@@ -110,6 +110,7 @@ class DiscordBot(commands.Bot):
             print("Could not find both client_id and token in settings.json")
             sys.exit(1)
 
+        self.ownerInviteLink = self.config.get("meta", {}).get("invite_link", "")
         self.client_id = client_id
         self.token = token
         self.colors = colors.Colors
