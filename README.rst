@@ -2,9 +2,9 @@ Discordbot.py
 =============
 |PyPI| |Python|
 
-.. |PyPI| image:: https://img.shields.io/pypi/v/discord.py.svg
+.. |PyPI| image:: https://img.shields.io/pypi/v/discordbot.py.svg
    :target: https://pypi.python.org/pypi/discordbot.py/
-.. |Python| image:: https://img.shields.io/pypi/pyversions/discord.py.svg
+.. |Python| image:: https://img.shields.io/pypi/pyversions/discordbot.py.svg
    :target: https://pypi.python.org/pypi/discordbot.py/
 This is an extention of `Rapptz'
 discord.py <https://github.com/Rapptz/discord.py>`__ to help make it
