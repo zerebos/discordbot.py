@@ -1,6 +1,11 @@
 Discordbot.py
 =============
+|PyPI| |Python|
 
+.. |PyPI| image:: https://img.shields.io/pypi/v/discord.py.svg
+   :target: https://pypi.python.org/pypi/discord.py/
+.. |Python| image:: https://img.shields.io/pypi/pyversions/discord.py.svg
+   :target: https://pypi.python.org/pypi/discord.py/
 This is an extention of `Rapptz'
 discord.py <https://github.com/Rapptz/discord.py>`__ to help make it
 even easier to make new bots, and simpler to make complex ones.

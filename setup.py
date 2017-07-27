@@ -33,6 +33,7 @@ setup(
     keywords='discord framework development',
     packages=find_packages(),
     install_requires=['discord.py'],
+    python_requires=">=3.5",
     extras_require={
         'voice': ['discord.py[voice]']
     }
