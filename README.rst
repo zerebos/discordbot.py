@@ -14,6 +14,16 @@ Current version of the code should be stable, but use at your own risk.
 
 The documentation will be built up over time hopefully.
 
+Installation
+------------
+
+This is a part of the official PyPI package directory and can be installed with pip.
+
+.. code:: bash
+
+   pip install discordbot.py
+
+
 Examples
 --------
 
