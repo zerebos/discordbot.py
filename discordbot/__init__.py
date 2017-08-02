@@ -12,7 +12,7 @@ __title__ = 'discordbot'
 __author__ = 'Zack Rauen'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2017 Zack Rauen'
-__version__ = '0.1.9'
+__version__ = '0.2.3.a2'
 
 
 from .discordbot import DiscordBot

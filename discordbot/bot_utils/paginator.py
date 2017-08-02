@@ -33,7 +33,7 @@ class Pages:
     permissions: discord.Permissions
         Our permissions for the channel.
     """
-    def __init__(self, bot, *, message, entries, per_page=12):
+    def __init__(self, bot, *, message, entries, per_page=10):
         self.bot = bot
         self.entries = entries
         self.message = message

@@ -9,7 +9,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='discordbot.py',
-    version='0.2.3.a2',
+    version='0.2.3.a3',
     description='A wrapper for discord.py with advanced functionality',
     long_description=long_description,
     url='https://github.com/rauenzi/discordbot.py',
@@ -32,7 +32,7 @@ setup(
     ],
     keywords='discord framework development',
     packages=find_packages(),
-    install_requires=['discord.py'],
+    install_requires=['discord.py', 'psutil'],
     python_requires=">=3.5",
     extras_require={
         'voice': ['discord.py[voice]']
