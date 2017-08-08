@@ -14,6 +14,8 @@ Current version of the code should be stable, but use at your own risk.
 
 The documentation will be built up over time hopefully.
 
+For support and such you can contact me on my `Discord Server <http://discord.zackrauen.com/>`__.
+
 Installation
 ------------
 
