@@ -49,8 +49,11 @@ class Reactions:
 
     @commands.command(pass_context=True, no_pm=True, aliases=["acr"])
     @checks.mod_or_permissions(manage_messages=True)
-    async def addreaction(self, ctx, *, reactor : str):
+    async def addreaction(self, ctx, *, reactor="" : str):
         """Interactively adds a custom reaction"""
+        if not reactor:
+            await self.bot.say("What should I react to?")
+            reactor = await self.bot.wait_for_message(author=ctx.message.author)
 
         data = self.config.get(ctx.message.server.id, {})
         keyword = data.get(reactor, {})
