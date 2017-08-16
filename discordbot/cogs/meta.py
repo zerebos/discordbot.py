@@ -308,13 +308,13 @@ class Meta:
 
     async def updateGuildStats(self):
         guild_count = len(self.bot.guilds)
-        carbonitexKey = self.config.get("credentials", {}).get("carbonitext", "")
-        discordbots_pwKey = self.config.get("credentials", {}).get("discordbots.pw", "")
-        discordbots_orgKey = self.config.get("credentials", {}).get("discordbots.org", "")
+        carbonitex_key = self.config.get("credentials", {}).get("carbonitext", "")
+        discordbots_pw_key = self.config.get("credentials", {}).get("discordbots.pw", "")
+        discordbots_org_key = self.config.get("credentials", {}).get("discordbots.org", "")
 
-        if carbonitexKey:
+        if carbonitex_key:
             carbon_payload = {
-                'key': carbonitexKey,
+                'key': carbonitex_key,
                 'servercount': guild_count
             }
 
@@ -325,9 +325,9 @@ class Meta:
             'server_count': guild_count
         })
 
-        if discordbots_pwKey:
+        if discordbots_pw_key:
             headers = {
-                'authorization': discordbots_pwKey,
+                'authorization': discordbots_pw_key,
                 'content-type': 'application/json'
             }
 
@@ -335,9 +335,9 @@ class Meta:
             async with self.session.post(url, data=payload, headers=headers) as resp:
                 self.bot.logs['info'].info(f'discordbots.pw statistics returned {resp.status} for {payload}')
 
-        if discordbots_orgKey:
+        if discordbots_org_key:
             headers = {
-                'authorization': discordbots_orgKey,
+                'authorization': discordbots_org_key,
                 'content-type': 'application/json'
             }
 
