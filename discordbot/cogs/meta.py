@@ -1,16 +1,21 @@
-import copy, os
+import copy, os, json
 import datetime
 import traceback
 from collections import Counter
 from collections import OrderedDict
 
 import discord
-import psutil
+import psutil, aiohttp
 from discord.ext import commands
 
 from ..bot_utils import config, checks
 from ..bot_utils.paginator import Pages
 from ..colors import Colors
+
+
+CARBONITEX_API = "https://www.carbonitex.net/discord/data/botdata.php"
+DISCORDBOTS_PW = "https://bots.discord.pw/api"
+DISCORDBOTS_ORG = "https://discordbots.org/api"
 
 
 class Meta:
@@ -20,6 +25,7 @@ class Meta:
         self.bot = bot
         self.process = psutil.Process()
         self.config = config.Config('stats.json', loop=bot.loop, directory="data")
+        self.session = aiohttp.ClientSession(loop=bot.loop)
 
     @commands.command(pass_context=True, aliases=['invite'])
     async def join(self, ctx):
@@ -250,6 +256,9 @@ class Meta:
 
         await self.bot.say(embed=embed)
 
+    async def on_ready(self):
+        await self.updateGuildStats()
+
     async def send_server_stat(self, server_event, server):
 
         bots = sum(m.bot for m in server.members)
@@ -296,6 +305,45 @@ class Meta:
         message = '{0} at {1}: Called by: {2} in {3}. More info: {4}'.format(name, time, author, location, description)
 
         self.bot.logs['discord'].critical(message)
+
+    async def updateGuildStats(self):
+        guild_count = len(self.bot.guilds)
+        carbonitexKey = self.config.get("credentials", {}).get("carbonitext", "")
+        discordbots_pwKey = self.config.get("credentials", {}).get("discordbots.pw", "")
+        discordbots_orgKey = self.config.get("credentials", {}).get("discordbots.org", "")
+
+        if carbonitexKey:
+            carbon_payload = {
+                'key': carbonitexKey,
+                'servercount': guild_count
+            }
+
+            async with self.session.post(CARBONITEX_API, data=carbon_payload) as resp:
+                self.bot.logs['info'].info(f'Carbon statistics returned {resp.status} for {carbon_payload}')
+
+        payload = json.dumps({
+            'server_count': guild_count
+        })
+
+        if discordbots_pwKey:
+            headers = {
+                'authorization': discordbots_pwKey,
+                'content-type': 'application/json'
+            }
+
+            url = f'{DISCORDBOTS_PW}/bots/{self.bot.user.id}/stats'
+            async with self.session.post(url, data=payload, headers=headers) as resp:
+                self.bot.logs['info'].info(f'discordbots.pw statistics returned {resp.status} for {payload}')
+
+        if discordbots_orgKey:
+            headers = {
+                'authorization': discordbots_orgKey,
+                'content-type': 'application/json'
+            }
+
+            url = f'{DISCORDBOTS_ORG}/bots/{self.bot.user.id}/stats'
+            async with self.session.post(url, data=payload, headers=headers) as resp:
+                self.bot.logs['info'].info(f'discordbots.pw statistics returned {resp.status} for {payload}')
 
 
 def setup(bot):
