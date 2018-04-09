@@ -8,10 +8,10 @@ import copy
 import discord
 from discord.ext import commands
 
-import embeds
-from bot_utils import checks
-from bot_utils import config
-from colors import Colors
+from .. import embeds
+from ..bot_utils import checks
+from ..bot_utils import config
+from ..colors import Colors
 
 
 class Arguments(argparse.ArgumentParser):

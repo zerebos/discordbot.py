@@ -10,9 +10,9 @@ import discord
 import psutil, aiohttp
 from discord.ext import commands
 
-from bot_utils import config, checks
-from bot_utils.paginator import Pages
-from colors import Colors
+from ..bot_utils import config, checks
+from ..bot_utils.paginator import Pages
+from ..colors import Colors
 
 
 CARBONITEX_API = "https://www.carbonitex.net/discord/data/botdata.php"

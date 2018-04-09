@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import discordbot
-import embeds
-from colors import Colors
+from . import discordbot, embeds
+from .colors import Colors
 
 class Messages:
 	def __init__(self, bot : discordbot):
