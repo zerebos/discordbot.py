@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import discordbotbot
+import discordbot
 import embeds
 from colors import Colors
 
