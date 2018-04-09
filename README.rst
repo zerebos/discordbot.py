@@ -23,7 +23,7 @@ This is a part of the official PyPI package directory and can be installed with 
 
 .. code:: bash
 
-   pip install discordbot.py
+    pip install discordbot.py
 
 
 Examples
@@ -56,6 +56,7 @@ anyone that types ``!greet`` you can do the following:
         """
         await bot.send_message(ctx.message.channel, "Hi there, {0}, how are you?".format(ctx.message.author.mention))
 
+    bot.load_cogs()
     bot.run()
 
 This should be accompanied by a ``settings.json`` file like this:
