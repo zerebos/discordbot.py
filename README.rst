@@ -72,7 +72,8 @@ This should be accompanied by a ``settings.json`` file like this:
       "credentials": {
         "token": "YOUR_TOKEN_HERE",
         "client_id": "YOUR_CLIENT_ID"
-      }
+      },
+      "cogs": ["discordbot.cogs.meta", "discordbot.cogs.botadmin"]
     }
 
 Features
