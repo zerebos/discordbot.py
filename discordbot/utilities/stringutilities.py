@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from difflib import SequenceMatcher
 import re
 

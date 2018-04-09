@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from discord.ext import commands
 
 from ..bot_utils import config, checks
@@ -60,10 +62,10 @@ class Reactions:
         keyword = data.get(reactor, {})
 
         if keyword:
-            await self.bot.responses.failure(message="Reaction '{}' already exists.".format(reactor))
+            await self.bot.responses.failure(message="Reaction '{reactor}' already exists.".format(reactor=reactor))
             return
 
-        await self.bot.say("Okay, I'll react to '{}'. What do you want me to say? (Type $none for no response)".format(reactor))
+        await self.bot.say("Okay, I'll react to '{reactor}'. What do you want me to say? (Type $none for no response)".format(reactor=reactor))
         response = await self.bot.wait_for_message(author=ctx.message.author)
 
         reactions = []
@@ -74,7 +76,7 @@ class Reactions:
             else:
                 return user == ctx.message.author
 
-        msg = await self.bot.say("Awesome! Now react to this message any reactions I should have to '{}'. (React \U000023f9 to stop)".format(reactor))
+        msg = await self.bot.say("Awesome! Now react to this message any reactions I should have to '{reactor}'. (React \U000023f9 to stop)".format(reactor=reactor))
         await self.bot.wait_for_reaction(message=msg, check=check)
 
         for i, reaction in enumerate(reactions):
@@ -88,7 +90,7 @@ class Reactions:
         data[reactor] = keyword
         await self.config.put(ctx.message.server.id, data)
 
-        await self.bot.responses.success(message="Reaction '{}' has been added.".format(reactor))
+        await self.bot.responses.success(message="Reaction '{reactor}' has been added.".format(reactor=reactor))
 
     @commands.command(pass_context=True, no_pm=True, aliases=["lcr"])
     @checks.mod_or_permissions(manage_messages=True)
@@ -115,7 +117,7 @@ class Reactions:
         keyword = data.get(reactor, {})
 
         if not keyword:
-            await self.bot.responses.failure(message="Reaction '{}' was not found.".format(reactor))
+            await self.bot.responses.failure(message="Reaction '{reactor}' was not found.".format(reactor=reactor))
             return
 
         response = data.get(reactor, {}).get("response", "")
@@ -145,9 +147,9 @@ class Reactions:
         if keyword:
             data.pop(reactor)
             await self.config.put(ctx.message.server.id, data)
-            await self.bot.responses.success(message="Reaction '{}' has been deleted.".format(reactor))
+            await self.bot.responses.success(message="Reaction '{reactor}' has been deleted.".format(reactor=reactor))
         else:
-            await self.bot.responses.failure(message="Reaction '{}' was not found.".format(reactor))
+            await self.bot.responses.failure(message="Reaction '{reactor}' was not found.".format(reactor=reactor))
 
     @commands.command(pass_context=True, no_pm=True, aliases=["dcrall"])
     @checks.mod_or_permissions(manage_messages=True)

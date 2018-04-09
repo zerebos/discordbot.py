@@ -1,10 +1,9 @@
-import discordbot
-from . import embeds
+# -*- coding: utf-8 -*-
+
+from . import discordbot, embeds
 from .colors import Colors
 
-
 class Messages:
-
     def __init__(self, bot : discordbot):
         self.bot = bot
         self.default_color = self.bot.config.get("meta", {}).get("default_color", "#738bd7").replace("#", "")

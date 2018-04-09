@@ -1,8 +1,11 @@
 # Directories #
 .idea/*
 __pycache__/
+data/
+logs/
 
 # Files #
 *.pyc
 *.iml
 *xml
+settings\.json

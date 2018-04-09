@@ -23,7 +23,7 @@ This is a part of the official PyPI package directory and can be installed with 
 
 .. code:: bash
 
-   pip install discordbot.py
+    pip install discordbot.py
 
 
 Examples
@@ -44,7 +44,7 @@ anyone that types ``!greet`` you can do the following:
 
     @bot.event
     async def on_member_join(member):
-        await bot.send_message(member.server, "Welcome {0.mention}, would you like to introduce yourself?".format(member))
+        await bot.send_message(member.server.default_channel, "Welcome {0}, would you like to introduce yourself?".format(member.mention))
         
     @bot.command(pass_context=True)
     async def greet(ctx):
@@ -54,8 +54,9 @@ anyone that types ``!greet`` you can do the following:
         help is called on the command itself as opposed to the 
         normal short help which shows up in the main help.
         """
-        await bot.responses.say("Hi there, {0.mention}, how are you?".format(ctx.message.author))
+        await bot.send_message(ctx.message.channel, "Hi there, {0}, how are you?".format(ctx.message.author.mention))
 
+    bot.load_cogs()
     bot.run()
 
 This should be accompanied by a ``settings.json`` file like this:
@@ -71,7 +72,8 @@ This should be accompanied by a ``settings.json`` file like this:
       "credentials": {
         "token": "YOUR_TOKEN_HERE",
         "client_id": "YOUR_CLIENT_ID"
-      }
+      },
+      "cogs": ["discordbot.cogs.meta", "discordbot.cogs.botadmin"]
     }
 
 Features
@@ -108,22 +110,7 @@ Your ``bot.py`` could be as minimal as this:
         bot.load_cogs()
         bot.run()
 
-As long as you have a JSON file like this:
-
-.. code:: json
-
-    {
-      "meta": {
-        "owner": "YOUR_ID",
-        "prefix": "ANY_PREFIX",
-        "description": "Optional description of the bot."
-      },
-      "credentials": {
-        "token": "YOUR_TOKEN_HERE",
-        "client_id": "YOUR_CLIENT_ID"
-      },
-      "cogs": ["cog_folder.cog_name", "cog_folder.another_cog"]
-    }
+As long as you have a ``settings.json`` file with the proper data.
 
 Through Python
 ^^^^^^^^^^^^^^

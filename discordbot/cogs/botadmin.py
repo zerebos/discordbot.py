@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import argparse
 import asyncio
 from collections import Counter, defaultdict
@@ -6,7 +8,7 @@ import copy
 import discord
 from discord.ext import commands
 
-import discordbot.embeds
+from .. import embeds
 from ..bot_utils import checks
 from ..bot_utils import config
 from ..colors import Colors
@@ -134,11 +136,11 @@ class BotAdmin:
         """Sets the default color of embeds."""
         sections = [{"name": "Section 1", "value": "Value 1"}, {"name": "Section 2"}, {"name": "Section 2.5", "value": "Value 2.5"},
                     {"name": "Section 3", "value": "Value 3", "inline": False}]
-        e = discordbot.embeds.build_embed(title="IDK", description="foo bar", sections=sections)
+        e = embeds.build_embed(title="IDK", description="foo bar", sections=sections)
         await self.bot.say(embed=e)
 
-    @discordbot.command(name="do", pass_context=True, hidden=True)
-    @discordbot.checks.is_owner()
+    @commands.command(name="do", pass_context=True, hidden=True)
+    @checks.is_owner()
     async def _do(self, ctx, times: int, *, command):
         """Repeats a command a specified number of times."""
         msg = copy.copy(ctx.message)
@@ -160,7 +162,7 @@ class BotAdmin:
             return await self.bot.responses.failure(message='Cannot disable that command.')
 
         if command not in self.bot.commands:
-            return await self.bot.responses.failure(message='Command "{}" was not found.'.format(command))
+            return await self.bot.responses.failure(message='Command "{cmd}" was not found.'.format(cmd=command))
 
         guild_id = ctx.message.server.id
         cmds = self.config.get('commands', {})
@@ -168,7 +170,7 @@ class BotAdmin:
         entries.append(command)
         cmds[guild_id] = entries
         await self.config.put('commands', cmds)
-        await self.bot.responses.success(message='"%s" command disabled in this server.' % command)
+        await self.bot.responses.success(message='"{cmd}" command disabled in this server.'.format(cmd=command))
 
     @commands.command(pass_context=True, no_pm=True)
     @checks.admin_or_permissions(manage_server=True)
@@ -186,11 +188,14 @@ class BotAdmin:
         try:
             entries.remove(command)
         except KeyError:
-            await self.bot.responses.failure(message='The command does not exist or is not disabled.')
+            if command not in self.bot.commands:
+                await self.bot.responses.failure(message='The command does not exist.')
+            else:
+                await self.bot.responses.failure(message='The command is not disabled.')
         else:
             cmds[guild_id] = entries
             await self.config.put('commands', cmds)
-            await self.bot.responses.success(message='"%s" command enabled in this server.' % command)
+            await self.bot.responses.success(message='"{cmd}" command enabled in this server.'.format(cmd=command))
 
     @commands.group(pass_context=True, no_pm=True)
     @checks.admin_or_permissions(manage_channels=True)
@@ -205,7 +210,7 @@ class BotAdmin:
         in ignored channels.
         """
         if ctx.invoked_subcommand is None:
-            await self.bot.say('Invalid subcommand passed: {0.subcommand_passed}'.format(ctx))
+            await self.bot.say('Invalid subcommand passed: {subcmd}\nRun `{prefix}help {cmd}` to see valid subcommands.'.format(subcmd=ctx.subcommand_passed, cmd=ctx.command, prefix=self.bot.command_prefix))
 
     @ignore.command(name='list', pass_context=True)
     async def ignore_list(self, ctx):
@@ -216,10 +221,10 @@ class BotAdmin:
         result = []
         for channel in ignored:
             if channel in channel_ids:
-                result.append('<#{}>'.format(channel))
+                result.append('<#{channel}>'.format(channel=channel.id))
 
         if result:
-            await self.bot.responses.basic(title="Ignored Channels:", message='\n\n{}'.format(', '.join(result)))
+            await self.bot.responses.basic(title="Ignored Channels:", message='\n\n{channels}'.format(channels=', '.join(result)))
         else:
             await self.bot.responses.failure(message='I am not ignoring any channels here.')
 
@@ -242,7 +247,7 @@ class BotAdmin:
 
         ignored.append(channel.id)
         await self.config.put('ignored', ignored)
-        await self.bot.responses.success(message='Channel <#{}> will be ignored.'.format(channel.id))
+        await self.bot.responses.success(message='Channel <#{channel}> will be ignored.'.format(channel=channel.id))
 
     @ignore.command(name='all', pass_context=True)
     @checks.admin_or_permissions(manage_server=True)
@@ -287,10 +292,10 @@ class BotAdmin:
             except ValueError:
                 pass
             else:
-                result.append('<#{}>'.format(channel.id))
+                result.append('<#{channel}>'.format(channel=channel.id))
 
         await self.config.put('ignored', ignored)
-        await self.bot.responses.success(message='Channel(s) {} will no longer be ignored.'.format(', '.join(result)))
+        await self.bot.responses.success(message='Channel(s) {channels} will no longer be ignored.'.format(channels=', '.join(result)))
 
     @unignore.command(name='all', pass_context=True, no_pm=True)
     @checks.admin_or_permissions(manage_channels=True)
@@ -302,6 +307,32 @@ class BotAdmin:
         """
         channels = [c for c in ctx.message.server.channels if c.type is discord.ChannelType.text]
         await ctx.invoke(self.unignore, *channels)
+
+    @commands.command(no_pm=True, pass_context=True)
+    @checks.admin_or_permissions(manage_server=True)
+    async def plonk(self, ctx, *, member: discord.Member):
+        """Bans a user from using the bot.
+
+        This bans a person from using the bot in the current server.
+        There is no concept of a global ban. This ban can be bypassed
+        by having the Manage Server permission.
+
+        To use this command you must have the Manage Server permission
+        or have a Bot Admin role.
+        """
+
+        plonks = self.config.get('plonks', {})
+        guild_id = ctx.message.server.id
+        db = plonks.get(guild_id, [])
+
+        if member.id in db:
+            await self.bot.responses.failure(message='That user is already bot banned in this server.')
+            return
+
+        db.append(member.id)
+        plonks[guild_id] = db
+        await self.config.put('plonks', plonks)
+        await self.bot.responses.success(message='{member} has been banned from using the bot in this server.'.format(member=member))
 
     @commands.command(pass_context=True, no_pm=True)
     @checks.mod_or_permissions(manage_messages=True)
@@ -357,41 +388,79 @@ class BotAdmin:
             spammers = Counter(m.author.display_name for m in deleted)
 
         deleted = sum(spammers.values())
-        messages = ['%s %s removed.' % (deleted, 'message was' if deleted == 1 else 'messages were')]
+        messages = ['{count} {m} removed.'.format(count=deleted, m = 'message was' if deleted == 1 else 'messages were')]
         if deleted:
             messages.append('')
             spammers = sorted(spammers.items(), key=lambda t: t[1], reverse=True)
-            messages.extend(map(lambda t: '**{0[0]}**: {0[1]}'.format(t), spammers))
+            messages.extend(map(lambda t: '**{name}**: {count}'.format(name=t[0], count=t[1]), spammers))
+
+        await self.bot.delete_message(ctx.message)
 
         msg = await self.bot.responses.basic(title="Removed Messages:", message='\n'.join(messages))
         await asyncio.sleep(10)
         await self.bot.delete_message(msg)
 
-    @commands.command(no_pm=True, pass_context=True)
-    @checks.admin_or_permissions(manage_server=True)
-    async def plonk(self, ctx, *, member: discord.Member):
-        """Bans a user from using the bot.
+    @commands.command(pass_context=True, no_pm=True)
+    @checks.mod_or_permissions(manage_messages=True)
+    async def clear(self, ctx, search : int = 100):
+        """Clears all messages from the chat.
 
-        This bans a person from using the bot in the current server.
-        There is no concept of a global ban. This ban can be bypassed
-        by having the Manage Server permission.
+        If a search number is specified, it searches that many messages to delete.
+        After the cleanup is completed, the bot will send you a message with
+        which people got their messages deleted and their count. This is useful
+        to see which users are spammers.
 
-        To use this command you must have the Manage Server permission
-        or have a Bot Admin role.
+        To use this command you must have Manage Messages permission or have the
+        Bot Mod role.
         """
 
-        plonks = self.config.get('plonks', {})
-        guild_id = ctx.message.server.id
-        db = plonks.get(guild_id, [])
+        spammers = Counter()
+        channel = ctx.message.channel
+        prefixes = self.bot.command_prefix
+        if callable(prefixes):
+            prefixes = prefixes(self.bot, ctx.message)
 
-        if member.id in db:
-            await self.bot.responses.failure(message='That user is already bot banned in this server.')
-            return
+        def is_possible_command_invoke(entry):
+            valid_call = any(entry.content.startswith(prefix) for prefix in prefixes)
+            return valid_call and not entry.content[1:2].isspace()
 
-        db.append(member.id)
-        plonks[guild_id] = db
-        await self.config.put('plonks', plonks)
-        await self.bot.responses.success(message='%s has been banned from using the bot in this server.' % member)
+        can_delete = channel.permissions_for(channel.server.me).manage_messages
+
+        if not can_delete:
+            api_calls = 0
+            async for entry in self.bot.logs_from(channel, limit=search, before=ctx.message):
+                if api_calls and api_calls % 5 == 0:
+                    await asyncio.sleep(1.1)
+
+                if entry.author == self.bot.user:
+                    spammers['Bot'] += 1
+                    api_calls += 1
+                else:
+                    spammers[entry.author.display_name] += 1
+                    if is_possible_command_invoke(entry):
+                        api_calls += 1
+
+                try:
+                    await self.bot.delete_message(entry)
+                except discord.Forbidden:
+                    continue
+
+        else:
+            deleted = await self.bot.purge_from(channel, limit=search, before=ctx.message)
+            spammers = Counter(m.author.display_name for m in deleted)
+
+        deleted = sum(spammers.values())
+        messages = ['{count} {m} removed.'.format(count=deleted, m = 'message was' if deleted == 1 else 'messages were')]
+        if deleted:
+            messages.append('')
+            spammers = sorted(spammers.items(), key=lambda t: t[1], reverse=True)
+            messages.extend(map(lambda t: '**{name}**: {count}'.format(name=t[0], count=t[1]), spammers))
+
+        await self.bot.delete_message(ctx.message)
+
+        msg = await self.bot.responses.basic(title="Removed Messages:", message='\n'.join(messages))
+        await asyncio.sleep(10)
+        await self.bot.delete_message(msg)
 
     @commands.command(no_pm=True, pass_context=True)
     @checks.admin_or_permissions(manage_server=True)
@@ -422,11 +491,11 @@ class BotAdmin:
         try:
             db.remove(member.id)
         except ValueError:
-            await self.bot.responses.failure(message='%s is not banned from using the bot in this server.' % member)
+            await self.bot.responses.failure(message='{member} is not banned from using the bot in this server.'.format(member=member))
         else:
             plonks[guild_id] = db
             await self.config.put('plonks', plonks)
-            await self.bot.responses.success(message='%s has been unbanned from using the bot in this server.' % member)
+            await self.bot.responses.success(message='{member} has been unbanned from using the bot in this server.'.format(member=member))
 
 def setup(bot):
     bot.add_cog(BotAdmin(bot))

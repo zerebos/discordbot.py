@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import copy, os, json
 import datetime
 import traceback
