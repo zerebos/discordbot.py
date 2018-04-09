@@ -110,22 +110,7 @@ Your ``bot.py`` could be as minimal as this:
         bot.load_cogs()
         bot.run()
 
-As long as you have a JSON file like this:
-
-.. code:: json
-
-    {
-      "meta": {
-        "owner": "YOUR_ID",
-        "prefix": "ANY_PREFIX",
-        "description": "Optional description of the bot."
-      },
-      "credentials": {
-        "token": "YOUR_TOKEN_HERE",
-        "client_id": "YOUR_CLIENT_ID"
-      },
-      "cogs": ["cog_folder.cog_name", "cog_folder.another_cog"]
-    }
+As long as you have a ``settings.json`` file with the proper data.
 
 Through Python
 ^^^^^^^^^^^^^^
