@@ -44,7 +44,7 @@ anyone that types ``!greet`` you can do the following:
 
     @bot.event
     async def on_member_join(member):
-        await bot.send_message(member.server, "Welcome {0.mention}, would you like to introduce yourself?".format(member))
+        await bot.send_message(member.server.default_channel, "Welcome {0}, would you like to introduce yourself?".format(member.mention))
         
     @bot.command(pass_context=True)
     async def greet(ctx):
@@ -54,7 +54,7 @@ anyone that types ``!greet`` you can do the following:
         help is called on the command itself as opposed to the 
         normal short help which shows up in the main help.
         """
-        await bot.responses.say("Hi there, {0.mention}, how are you?".format(ctx.message.author))
+        await bot.send_message(ctx.message.channel, "Hi there, {0}, how are you?".format(ctx.message.author.mention))
 
     bot.run()
 
