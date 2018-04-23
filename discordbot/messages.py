@@ -38,7 +38,7 @@ class Messages:
         color = params.pop("color", Colors.get_default(self.bot))
         if isinstance(color, Colors): color = color.value
         e = embeds.build_embed(title=params.pop("title", ""), description=params.pop("message", params.pop("description", "")),
-                               color=params.pop("color", Colors.get_default(self.bot)), **params)
+                               color=color, **params)
         return await self.say(**params, embed=e)
 
     async def success(self, **params):
@@ -48,7 +48,7 @@ class Messages:
 
     async def failure(self, **params):
         title = params.pop("title", "")
-        message = params.pop("message", "Success")
+        message = params.pop("message", "Failure")
         return await self.basic(title=title, message=message, color=Colors.failure, **params)
 
     async def toggle(self, **params):
